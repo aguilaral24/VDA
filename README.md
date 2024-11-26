@@ -1,5 +1,5 @@
 # Librería Visualización de Datos Avanzada
-##Importancia del impacto visual, la creatividad y la libertad en  la creación de gráficos personalizados
+## Importancia del impacto visual, la creatividad y la libertad en  la creación de gráficos personalizados
 
 
 #### Julio 2024.
