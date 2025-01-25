@@ -1,0 +1,172 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: black;
+}
+
+canvas {
+    display: block;
+}
+
+#mapCanvas{
+    border:1px solid #000000;
+    margin-left: 9%; 
+    margin-top: 3%; 
+    z-index: 10; 
+    position: absolute;
+}
+
+#bubbleCanvas{
+    border:1px solid #000000; 
+    margin-left: 9%; 
+    margin-top: 3%; 
+    z-index: 20; 
+    position: absolute;
+}
+
+
+/*Overlay Data when mouseover*/
+
+#infoOverlay{
+    position: absolute; 
+    z-index: 30; 
+    background-color: rgba(247,247,250, 0.6); 
+    border-radius: 10px; 
+    padding: 1%;
+}
+
+/*Bubble color reference*/
+
+#bubbleColorReferenceCanvas{
+    position: absolute; 
+    bottom: -150px; 
+    left: 290px; 
+    z-index: 10;
+}
+
+/*Bubble Size Reference*/
+
+.bubbleSizeReference {
+    border: 1px solid #ccc;
+    margin-bottom: 16px;
+    position: absolute;
+    top: 420px; 
+    left: 35px;
+    width: 20.5%;
+    border-radius: 4%;
+    z-index: 30;
+}
+  
+.bubbleSizeReference-header {
+    background-color: rgba(255,255,255,0.6);
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 5% 5% 0 0;
+}
+
+.bubbleSizeReference-content {
+    padding: 12px;
+    background-color: rgba(255,255,255,0.2);
+}
+
+.bubbleSizeReference-content p {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.bubbleSizeReference-content img {
+    margin-right: 30px;
+    width: 25%;
+  }
+
+.bubbleSizeReference-content {
+    display: block;
+}
+
+#bubbleSizeReferenceCanvas{
+    z-index: -1; 
+    position: absolute; 
+    bottom: 0px; 
+    left: 260px;
+}
+
+/*Title and desc*/
+
+#mapTitle{
+    top:0;
+    position: absolute;
+    color: white;
+    text-align: center;
+    width: 100%;
+}
+
+#mapDesc{
+    top:50px;
+    position: absolute;
+    color: white;
+    text-align: center;
+    width: 100%;
+}
+
+/*Slider*/
+#yearSlider{
+    position: absolute; 
+    top:125px; 
+    right:70px;
+    color: white;
+    width: 18%;
+    z-index: 30;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    background-color: rgb(188, 192, 192); /* Color de la barra del slider */
+    border-radius: 20px;
+  }
+  
+
+#years_{
+    color: white;
+    top: 155px;
+    right: 50px;
+    display: flex;
+    position: absolute;
+    font-size: x-small;
+}
+
+#years_ option {
+    margin-right: 22px; /* Ajusta el espacio entre las opciones */
+}
+
+/*Check boxes*/
+#impactChecks{
+    position: absolute;
+    top: 190px;
+    right: 68px;
+    display: flex;
+    color: white;
+    z-index: 30;
+}  
+
+#impactChecks input{
+    margin-left: 13px;
+}
+
+/*Loading animation*/
+
+#loading{
+    position: absolute; 
+    top: 45%; 
+    left: 48%; 
+    display: none; 
+    z-index: 1000;
+}
+
+#loading img{
+    width:13%;
+}

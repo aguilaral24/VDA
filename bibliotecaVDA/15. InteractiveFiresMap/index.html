@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Meta Información -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incendios Forestales en México</title>
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="resources/css/styles.css">
+
+    <!-- Scripts Externos -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Título y Descripción del Mapa -->
+        <h1 id="mapTitle">Incendios Forestales en México</h1>
+        <p id="mapDesc">
+            Datos recabados por la CONAFOR a partir de 2015 a 2021. 
+            El tamaño de las burbujas representa el total de hectáreas afectadas; se tiene un rango de afectación general de 
+            <span id="minRange">0.005</span> a <span id="maxRange">23,809</span> hectáreas.
+        </p>
+
+        <!-- Canvases para el Mapa y las Burbujas -->
+        <canvas id="mapCanvas"></canvas>
+        <canvas id="bubbleCanvas"></canvas>
+        
+        <!-- Superposición de Información -->
+        <div id="infoOverlay" class="info-overlay"></div>
+
+        <!-- Referencia de Colores para las Burbujas -->
+        <canvas id="bubbleColorReferenceCanvas"></canvas>
+    </div>
+
+    <!-- Control Deslizante para Seleccionar el Año -->
+    <input type="range" id="yearSlider" min="2015" max="2021" value="2015" step="1" list="years_">
+    <datalist id="years_">
+        <!-- Lista de Opciones de Años -->
+        <option value="2015">2015</option>
+        <option value="2016">2016</option>
+        <option value="2017">2017</option>
+        <option value="2018">2018</option>
+        <option value="2019">2019</option>
+        <option value="2020">2020</option>
+        <option value="2021">2021</option>
+    </datalist>
+
+    <!-- Filtros de Impacto -->
+    <div id="impactChecks">
+        <span>Impacto:</span>
+        <input type="checkbox" class="Impactcheck" id="minimo" name="categoria" value="minimo">
+        <label for="minimo">Mínimo</label><br>
+        <input type="checkbox" class="Impactcheck" id="moderado" name="categoria" value="moderado">
+        <label for="moderado">Moderado</label><br>
+        <input type="checkbox" class="Impactcheck" id="severo" name="categoria" value="severo">
+        <label for="severo">Severo</label><br>
+    </div>
+
+    <!-- Referencia del Tamaño de las Burbujas -->
+    <div class="bubbleSizeReference">
+        <div class="bubbleSizeReference-header">
+            <span>Referencia para el tamaño de las burbujas</span>
+        </div>
+        <div class="bubbleSizeReference-content">
+            <!-- Ejemplos de Comparación -->
+            <p><img src="resources/img/cu.png" alt="Ciudad Universitaria"> 750 hect. aprox. <br> C. Universitaria</p>
+            <p><img src="resources/img/fundidora.png" alt="Parque Fundidora"> 100 hect. aprox. <br> Parque Fundidora</p>
+            <p><img src="resources/img/azteca.png" alt="Estadio Azteca"> 50 hect. aprox. <br> Estadio Azteca</p>
+            <p><img src="resources/img/auditorio.png" alt="Auditorio Nacional"> 10 hect. aprox. <br> Auditorio Nacional</p>
+            <p><img src="resources/img/zocalo.png" alt="Zócalo CDMX"> 5 hect. aprox. <br> Zócalo, CDMX</p>
+            <p><img src="resources/img/park.png" alt="Parque España"> 1 hectárea aprox.<br> Parque España</p>
+            <!-- Canvas para Referencia del Tamaño -->
+            <canvas id="bubbleSizeReferenceCanvas"></canvas>
+        </div>
+    </div>
+
+    <!-- Cargando -->
+    <div id="loading">
+        <img src="resources/img/loading.gif" alt="Cargando...">
+    </div>
+
+    <!-- Scripts del Proyecto -->
+    <script type="module" src="resources/js/main.js"></script>
+</body>
+</html>
