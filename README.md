@@ -1,4 +1,4 @@
-# Librería Visualización de Datos Avanzada
+# Biblioteca Visualización de Datos Avanzada
 ## Importancia del impacto visual, la creatividad y la libertad en  la creación de gráficos personalizados
 
 
@@ -7,7 +7,10 @@
 #### Supervisor del proyecto: José Ezequiel Soto Sánchez.
 
 
+Este repositorio alberga la documentación y y plan de desarrollo para implementar la biblioteca VDA como caso práctico para la titulación de la Maestría en Ciencia de Datos del ITAM.
 
-Este repositorio alberga la documentación y y plan de desarrollo para implementar la librería VDA como caso práctico para la titulación de la Maestría en Ciencia d Datos del ITAM.
-
-La documentación y código de la librería pueden ser consultados en: https://github.com/cheque/cardamomo
+En este repositorio se encuentra 
+1. la documentación de la biblioteca:
+- Guia de usuario
+- Objetivos, Justificación y desarrollo de la biblioteca
+2. El código de la biblioteca impementado en java script
