@@ -1,0 +1,28 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+#miCanvas {
+    display: block;
+    margin: auto;
+    border: 1px solid black;
+    margin-top: 2%;
+}
+
+.info-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    /* Capa superior */
+    pointer-events: none;
+    /* Evita que el overlay interfiera con eventos de mouse */
+    display: none;
+    /* Inicialmente oculto */
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
