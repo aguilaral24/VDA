@@ -734,9 +734,620 @@ function drawInteractiveBubbleSizeReferences(context, originalValues, sizeColumn
 }
 
 
+/**
+ * Función principal para crear y dibujar el árbol en el canvas.
+ *
+ * @param {*} data - Conjunto de datos que contiene la información de adopciones.
+ *                   Este conjunto de datos debe incluir columnas para el año de adopción y el género de los niños.
+ *
+ * @param {*} yearColumnName - Nombre de la columna que contiene el año de adopción.
+ *                              Se utiliza para filtrar los datos según el año seleccionado.
+ *
+ * @param {*} classColumnName - Nombre de la columna que indica el género del niño (por ejemplo, 0 para niñas y 1 para niños).
+ *                               Se usa para contar el número de adopciones por género.
+ *
+ * @param {*} selectedYear - Año seleccionado por el usuario. Este valor se usa para filtrar los datos en función del año de adopción.
+ *
+ * @param {*} isAccumulative - Valor booleano que indica si los datos deben ser acumulativos hasta el año seleccionado (`true`) o si deben ser solo del año exacto (`false`).
+ *
+ * @param {*} treeCanvasId - ID del canvas donde se dibujará el árbol. Este canvas es donde se simula el crecimiento del árbol con ramas y flores.
+ *
+ * @param {*} flowersCanvasId - ID del canvas donde se dibujarán las flores en las ramas del árbol.
+ *                               Este canvas se usa para pintar las flores de niñas y niños en las ramas del árbol.
+ */
+export function createTree(data, yearColumnName, classColumnName, selectedYear, isAccumulative, treeCanvasId, flowersCanvasId) {
+  
+  // Cancelar animaciones previas
+  // Detenemos las animaciones anteriores para evitar sobreposición de nuevas animaciones
+  stopAllAnimations(window.animationIDs);
+
+  // Inicialización de parámetros del árbol
+  let treeParams = initTreeParams(treeCanvasId, flowersCanvasId);
+
+  // Cálculo de las ramas (simulación del crecimiento del árbol)
+  let arbol1 = calculateBranches(-Math.PI / 2 + Math.random() * Math.PI / 4, treeParams);
+  let arbol2 = calculateBranches(-Math.PI / 2 - Math.random() * Math.PI / 4, treeParams);
+
+  // Filtrado de datos y cálculo de adopciones
+  let filteredData;
+  if (isAccumulative) {
+    filteredData = data.filter(d => d[yearColumnName] <= parseInt(selectedYear));
+  } else {
+    filteredData = data.filter(d => d[yearColumnName] === parseInt(selectedYear));
+  }
+
+  // Calcular el número total de adopciones y dividir entre niños y niñas
+  const adoptionCounts = { male: 0, female: 0 };
+  filteredData.forEach(item => {
+    if (item[classColumnName] === 1) {
+      adoptionCounts.male += 1;
+    } else if (item[classColumnName] === 0) {
+      adoptionCounts.female += 1;
+    }
+  });
+
+  //Asignamos total de niños y niñas
+  treeParams.maxNumFlowers = filteredData.length;
+  treeParams.numNinias = adoptionCounts.female;
+  treeParams.numNinios = adoptionCounts.male;
+
+  // Generamos el árbol 
+  drawTree(arbol1, treeParams); 
+  drawTree(arbol2, treeParams); 
+
+  // Actualizamos los marcadores con el número total de niños y niñas adoptados
+  updateTreeTotalAccount(adoptionCounts.male, adoptionCounts.female);
+}
+
+
+/**
+ * Inicializa los parámetros y configuraciones necesarias para el árbol y las flores.
+ *
+ * @param {*} treeCanvasId - ID del canvas donde se dibujará el árbol.
+ * @param {*} flowersCanvasId - ID del canvas donde se dibujarán las flores.
+ * @returns {Object} - Objeto que contiene todos los parámetros inicializados para el árbol y las flores.
+ */
+export function initTreeParams(treeCanvasId, flowersCanvasId) {
+
+  // Obtener referencias a los elementos canvas y contextos
+  const canvas = document.getElementById(treeCanvasId);
+  const treeContext = canvas.getContext('2d');
+  const flowersCanvas = document.getElementById(flowersCanvasId);
+  const flowersContext = flowersCanvas.getContext('2d');
+
+  // Ajustar tamaño de los canvas
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  flowersCanvas.width = window.innerWidth;
+  flowersCanvas.height = window.innerHeight;
+
+  // Inicializar parámetros de árbol
+  let maxDepth = 7; 
+  const branchAngle = Math.PI / 4; 
+  const initialAngle = -Math.PI / 2; 
+  const initialBranchWidth = 30; 
+  const initialBranchLength = 200; 
+
+  // Inicializamos variables para flores
+  let maxNumFlowers = 0;
+  let flowerNumber = 0;
+  let numNinios = 0;
+  let numNinias = 0;
+  let countNinias = 0;
+  let countNinios = 0;
+
+  // Velocidad de animación
+  let animationSpeed = 2500; 
+
+  // Inicializar arrays para segmentos, flores y ramas
+  let segments = [];
+  let flowers = [];
+  let branches = [];
+
+  // Inicializar arrays para cálculos trigonométricos
+  let cosValues = [];
+  let sinValues = [];
+
+  // Llenar cosValues y sinValues con valores de ángulos para las ramas
+  for (var i = 0; i < 5; i++) {
+      var angle = (Math.PI * 2 * i) / 5;
+      cosValues.push(Math.cos(angle));
+      sinValues.push(Math.sin(angle));
+  }
+
+  // Devolvemos un objeto con todas las variables inicializadas
+  return {
+      canvas: canvas,
+      treeContext: treeContext,
+      flowersCanvas: flowersCanvas,
+      flowersContext: flowersContext,
+      maxDepth: maxDepth,
+      branchAngle: branchAngle,
+      initialAngle: initialAngle,
+      initialBranchWidth: initialBranchWidth,
+      initialBranchLength: initialBranchLength,
+      maxNumFlowers: maxNumFlowers,
+      flowerNumber: flowerNumber,
+      numNinios: numNinios,
+      numNinias: numNinias,
+      countNinias: countNinias,
+      countNinios: countNinios,
+      animationSpeed: animationSpeed,
+      segments: segments,
+      flowers: flowers,
+      branches: branches,
+      cosValues: cosValues,
+      sinValues: sinValues
+  };
+}
+
+/**
+* Dibuja una flor en una posición específica y actualiza los contadores de flores dibujadas.
+*
+* @param {number} X - Coordenada X donde se dibuja la flor.
+* @param {number} Y - Coordenada Y donde se dibuja la flor.
+* @param {Object} treeParams - Objeto que contiene los parámetros del árbol y las flores, incluyendo contadores y configuraciones.
+*/
+export function drawFlower(X,Y,treeParams){
+
+  // Generar un tamaño aleatorio para la flor entre 10 y 60 unidades.
+  var flowerSize = Math.random() * (60 - 10) + 10;
+
+  // Incrementar el contador global de flores dibujadas.
+  treeParams.flowerNumber += 1;
+
+  // Inicializar el color de la flor (1 para "niño" por defecto).
+  var flowerColor  = 1;
+
+  // Determinar el color de la flor basado en el número total de "niños" y "niñas" restantes.
+  if (treeParams.flowerNumber % 2 === 0) {
+      // Si el número de la flor es par, intentar asignar el color "niña".
+      if(treeParams.countNinias< treeParams.numNinias){
+          flowerColor = 0; // Asignar color "niña".
+          treeParams.countNinias += 1; // Incrementar el contador de "niñas" dibujadas.
+      } else {
+          flowerColor = 1; // Si no hay más "niñas" disponibles, asignar color "niño".
+      }
+  }
+  else{
+      // Si el número de la flor es impar, intentar asignar el color "niño".
+      if (treeParams.countNinios < treeParams.numNinios) {
+          flowerColor = 1; // Asignar color "niño".
+          treeParams.countNinios += 1; // Incrementar el contador de "niños" dibujados.
+      } else {
+          flowerColor = 0; // Si no hay más "niños" disponibles, asignar color "niña".
+      }
+  }
+  
+  // Llamamos a la función drawSierpinskiPentagon para dibujar la flor como un pentágono de Sierpinski.
+  // Se le pasan las coordenadas, el tamaño, el nivel de detalle, el color y los parámetros del árbol.
+  drawSierpinskiPentagon(X, Y, flowerSize, 3, flowerColor, treeParams);
+
+}
+
+/**
+* Calcula las ramas del árbol y sus bifurcaciones recursivamente.
+*
+* @param {number} angle - Ángulo inicial para la primera rama (en radianes).
+* @param {Object} treeParams - Objeto que contiene los parámetros del árbol, como el ángulo de bifurcación, la profundidad máxima y las dimensiones del canvas.
+* @returns {Array} branches - Un arreglo con las ramas generadas, donde cada rama es un objeto con información sobre su posición, tamaño y ángulo.
+*/
+export function calculateBranches(angle, treeParams){
+  
+  // Array donde se almacenarán las ramas generadas.
+  var branches = [];
+  
+  // Posición inicial del tronco (parte inferior, centro del canvas).
+  let startX = treeParams.canvas.width / 2;
+  let startY = treeParams.canvas.height;
+
+  // Profundidad inicial del árbol.
+  let depth = 1;
+
+  // Ancho y largo inicial de la primera rama.
+  let width = 30;
+  let length = 200;
+
+  // Iniciar la creación del árbol desde el tronco principal.
+  createBranch(startX, startY, length, width, angle, depth, branches,treeParams);
+
+  // Retornar todas las ramas generadas.
+  return branches;
+}
+
+
+/**
+* Función recursiva para crear una rama y sus bifurcaciones.
+*
+* @param {number} startX - Coordenada X de inicio de la rama.
+* @param {number} startY - Coordenada Y de inicio de la rama.
+* @param {number} length - Longitud de la rama actual.
+* @param {number} width - Ancho de la rama actual.
+* @param {number} angle - Ángulo de inclinación de la rama.
+* @param {number} depth - Profundidad actual de la rama (nivel en el árbol).
+* @param {Object} treeParams - Objeto que contiene los parámetros del árbol, como el ángulo de bifurcación, la profundidad máxima y las dimensiones del canvas.
+*/
+export function createBranch(startX, startY, length, width, angle, depth, branches,treeParams){
+  
+  // Condición de terminación: si se excede la profundidad máxima, no continuar.  
+  if(depth > treeParams.maxDepth){
+      return;
+  }
+
+  //Calculamos punto final de la rama
+  var endX = startX + length * Math.cos(angle);
+  var endY = startY + length * Math.sin(angle);
+
+  // Agregar la rama al arreglo con su información.
+  branches.push({ startX, startY, endX, endY, depth, width, angle });
+
+  // Calcular los ángulos de las bifurcaciones (izquierda y derecha) de manera aleatoria.
+  var leftAngle = angle - Math.random() * treeParams.branchAngle;
+  var rightAngle = angle + Math.random() * treeParams.branchAngle;
+
+  // Crear las bifurcaciones recursivamente con menor longitud, ancho y mayor profundidad.
+  createBranch(endX, endY, length * 0.86, width * 0.7, leftAngle, depth + 1, branches, treeParams);
+  createBranch(endX, endY, length * 0.86, width * 0.7, rightAngle, depth + 1, branches, treeParams);
+}
+
+
+/**
+* Función para dibujar un árbol animado en el canvas, dibujando sus ramas por niveles de profundidad y agregando flores.
+*
+* @param {Array} branches - Array de objetos que representan las ramas del árbol.
+* @param {Object} treeParams - Objeto que contiene los parámetros del árbol, como el ángulo de bifurcación, la profundidad máxima y las dimensiones del canvas.
+*/
+export function drawTree(branches,treeParams) {
+
+  // Nivel de profundidad actual que se está dibujando.
+  var curDepth = 1;
+
+  /**
+   * Función para dibujar las ramas de la profundidad actual.
+   * Al finalizar, incrementa la profundidad y continúa con la siguiente.
+   */
+  function drawNextDepth() {
+      if (curDepth <= treeParams.maxDepth) {
+          
+          // Tiempo inicial de la animación para calcular el progreso.
+          var startTime = performance.now();
+
+          /**
+           * Función que dibuja las ramas de la profundidad actual con una animación progresiva.
+           *
+           * @param {number} timestamp - Tiempo actual proporcionado por `requestAnimationFrame`.
+           */
+          function drawStep(timestamp) {
+              
+              // Calcular el progreso de la animación (entre 0 y 1).
+              var progress = Math.min((timestamp - startTime) / treeParams.animationSpeed, 1);
+
+              // Estilo de las ramas (color marrón oscuro).
+              treeParams.treeContext.strokeStyle = "#1F1916";
+
+              // Dibujar cada rama de la profundidad actual de forma progresiva.
+              branches.forEach(branch => {
+                  if (branch.depth === curDepth) {
+                      
+                      // Calcular las coordenadas actuales del punto final de la rama.
+                      var currentEndX = branch.startX + progress * (branch.endX - branch.startX);
+                      var currentEndY = branch.startY + progress * (branch.endY - branch.startY);
+
+                      // Dibujar la rama actual.
+                      treeParams.treeContext.beginPath();
+                      treeParams.treeContext.lineWidth = branch.width;
+                      treeParams.treeContext.moveTo(branch.startX, branch.startY);
+                      treeParams.treeContext.lineTo(currentEndX, currentEndY);
+                      treeParams.treeContext.stroke();
+                  }
+              });
+
+              // Si la animación no está completa, continuar con el siguiente cuadro.
+              if (progress < 1) {
+                  var id = requestAnimationFrame(drawStep);
+                  window.animationIDs.push(id);
+              } else {
+                  // Si la animación de la profundidad actual terminó:
+                  branches.forEach(branch => {
+                      // Dibujar flores en las ramas de la profundidad actual si se permite.
+                      if (branch.depth === curDepth) { console.log(treeParams.maxNumFlowers)
+                          if(curDepth >=2 && treeParams.flowerNumber < treeParams.maxNumFlowers)
+                          {
+                              treeParams.treeContext.globalCompositeOperation = "destination-under";
+
+                              // Llamar a la función `drawFlower` para dibujar la flor.
+                              drawFlower(branch.endX,branch.endY,treeParams);
+                          }
+                      }
+                  });
+
+                  curDepth++; // Pasamos a la siguiente profundidad
+
+                  // Llamar recursivamente para la siguiente profundidad.
+                  drawNextDepth(); 
+              }
+          }
+
+          // Animación de profundidad actual
+          var id = requestAnimationFrame(timestamp => drawStep(timestamp));
+          window.animationIDs.push(id);// Guardar el ID de la animación.
+
+      }
+  }
+
+  // Iniciar la animación comenzando por la primera profundidad
+  drawNextDepth();
+}
+
+// Función para dibujar un pentágono de Sierpinski con efecto de zoom gradual
+/**
+* @param {number} x - Coordenada x del centro del pentágono.
+* @param {number} y - Coordenada y del centro del pentágono.
+* @param {number} size - Tamaño del pentágono (distancia desde el centro hasta un vértice).
+* @param {number} depth - Profundidad de la recursión (niveles de subdivisión).
+* @param {number} color - Determina el esquema de color del gradiente (1 para azul, otro valor para rosa).
+* @param {Object} treeParams - Objeto que contiene los parámetros del árbol, como el ángulo de bifurcación, la profundidad máxima y las dimensiones del canvas.
+*/
+export function drawSierpinskiPentagon(x, y, size, depth,color,treeParams) {
+  
+  // Caso base: si la profundidad es 0, no se dibuja nada y se detiene la recursión.
+  if (depth === 0) {
+      return;
+  }
+
+  // Calcula los puntos (vértices) del pentágono basados en los valores de seno y coseno.
+  var points = [];
+  for (var i = 0; i < 5; i++) {
+      points.push({
+          x: x + size * treeParams.cosValues[i],
+          y: y + size * treeParams.sinValues[i]
+      });
+  }
+
+  // Centro del pentágono (en este caso coincide con `x, y`).
+  var centerX = x;
+  var centerY = y; 
+
+  // Crea el gradiente de color azul desde el centro hacia los bordes
+  var gradient = treeParams.flowersContext.createRadialGradient(centerX, centerY, 0, centerX, centerY, size);
+
+  if(color===1){
+      gradient.addColorStop(0, 'white'); // Blanco
+      gradient.addColorStop(0.9, '#164C8F');// Azul oscuro.
+      gradient.addColorStop(0.9, '#164C8F'); // Azul oscuro.
+      gradient.addColorStop(1, 'white'); //Blanco
+  }
+  else{
+      gradient.addColorStop(0, 'white'); // Blanco.
+      gradient.addColorStop(0.9, '#DE78A1'); // Rosa oscuro
+      gradient.addColorStop(0.7, '#DE78A1'); //Rosa oscuro
+      gradient.addColorStop(1, 'white'); // Blanco.
+  }
+
+
+  // Animación para dibujar los pentágonos de forma progresiva si la profundidad es menor a 2.
+  if (depth < 2) {
+      // Progreso inicial de la animación.
+      var progress = 0;
+
+       //Función para animar el crecimiento progresivo del pentágono.
+      function drawZoomStep() {
+          // Incrementar el progreso.
+          progress +=  0.026;
+
+          // Calcular el tamaño actual basado en el progreso.
+          var currentSize = size * progress;
+
+          // Calcular los nuevos puntos del pentágono basados en el tamaño actual.
+          var newPoints = [];
+          for (var i = 0; i < 5; i++) {
+              newPoints.push({
+                  x: x + currentSize * treeParams.cosValues[i],
+                  y: y + currentSize * treeParams.sinValues[i]
+              });
+          }
+
+          // Dibujar el pentágono con el gradiente calculado.                    
+          treeParams.flowersContext.beginPath();
+          treeParams.flowersContext.fillStyle = gradient; // Establece el color de relleno
+          treeParams.flowersContext.moveTo(points[0].x, points[0].y);
+          for (var i = 0; i < 5; i++) {
+              treeParams.flowersContext.lineTo(newPoints[i].x, newPoints[i].y);
+          }
+          treeParams.flowersContext.closePath();
+          treeParams.flowersContext.fill();
+
+          // Continuar la animación si el progreso no ha alcanzado el 100%.
+          if (progress < 1) {
+              var id = requestAnimationFrame(drawZoomStep);
+              window.animationIDs.push(id);
+          }
+      }
+
+      // Iniciar la animación de zoom del pentágono.
+      var id = requestAnimationFrame(drawZoomStep);
+      window.animationIDs.push(id);
+
+  }
+
+  // Calcular los puntos centrales para los pentágonos internos (más pequeños).
+  var innerPoints = [];
+  for (var i = 0; i < 5; i++) {
+      innerPoints.push({
+          x: x + (size / 2) * treeParams.cosValues[i],
+          y: y + (size / 2) * treeParams.sinValues[i]
+      });
+  }
+
+  // Llamada recursiva para dibujar pentágonos internos con tamaño reducido.
+  for (var i = 0; i < 5; i++) {
+      drawSierpinskiPentagon(innerPoints[i].x, innerPoints[i].y, size / 3, depth - 1, color, treeParams);
+  }
+
+}
+
+/**
+* Actualiza los contadores de niños y niñas en el marcador visual de la página.
+* 
+* @param {number} numNinios - Número total de niños que se quiere mostrar en el marcador.
+* @param {number} numNinias - Número total de niñas que se quiere mostrar en el marcador.
+*/
+export function updateTreeTotalAccount(numNinios,numNinias) {
+  // Obtiene el elemento HTML con el ID 'marca_ninios', que representa el marcador de niños.
+  const marcadorNinios = document.getElementById('marca_ninios');
+  
+  // Actualiza el contenido de texto del marcador de niños con el número recibido como parámetro.
+  marcadorNinios.textContent = numNinios;
+
+  // Obtiene el elemento HTML con el ID 'marca_ninias', que representa el marcador de niñas.
+  const marcadorNinias = document.getElementById('marca_ninias');
+  // Actualiza el contenido de texto del marcador de niñas con el número recibido como parámetro.
+  marcadorNinias.textContent = numNinias;
+}
+
+
+/**
+ * Dibuja una serie de tiempo radial en un canvas, con valores distribuidos en un círculo.
+ * 
+ * @param {HTMLCanvasElement} canvas - Elemento `<canvas>` donde se renderiza la gráfica.
+ * @param {CanvasRenderingContext2D} context - Contexto de renderizado 2D del canvas.
+ * @param {string} csvFilePath - Ruta del archivo CSV con los datos a graficar.
+ * @param {string} valueColumn - Nombre de la columna que contiene los valores a representar radialmente.
+ * @param {string} color - Color principal de la gráfica (líneas y áreas rellenas).
+ * @param {boolean} [filledCircles=false] - Indica si los puntos deben dibujarse rellenos o solo con contorno.
+ * @param {number} [pointRadius=2] - Radio de los puntos en la gráfica.
+ * @param {number} lineWidth - Grosor de la línea de la serie de tiempo.
+ * @param {number} [canvasPadding=context.canvas.width * 0.02] - Espacio entre el contenido y los bordes del canvas.
+ * @param {string[]} infoColumNames - Nombres de las columnas de información adicional para mostrar en el hover.
+ * @param {number} [lineDivideFactor=1] - Factor de división para mostrar líneas de referencia con etiquetas.
+ * @param {HTMLElement} infoOverlay - Elemento HTML donde se muestra la información al hacer hover sobre los puntos.
+ * @param {number} maxValue - Valor máximo esperado en los datos, usado para la escala radial.
+ * @param {number} minValue - Valor mínimo esperado en los datos, usado para la escala radial.
+ */
+export async function drawRadialTimeSeries(canvas, context, csvFilePath, valueColumn, color, pointRadius = 2, 
+                                           canvasPadding = context.canvas.width * 0.02,infoColumNames,lineDivideFactor, infoOverlay, maxValue, minValue) {
+
+  if (!context) {
+      throw new Error("El contexto no está inicializado.");
+  }
+
+  // Carga y adecuación de datos
+  var data = await loadCSV(csvFilePath);
+
+  // Radio máximo y mínimo en el gráfico
+  const radius = Math.min(canvas.width, canvas.height) / 2 - 2*canvasPadding;
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+ 
+  // Radio del círculo interno (valor mínimo)
+  const innerRadius = 170;
+
+  // Calcular la escala radial de los puntos entre el círculo interno y el círculo externo
+  const radialScale = d3.scaleLinear().domain([minValue, maxValue]).range([innerRadius, radius]);
+
+  // Dividir el círculo en n partes (ángulos) según los datos
+  const angleStep = -(Math.PI * 2 /data.length);
+
+  // Mapeo radial de los puntos al canvas
+  const radialPoints = data.map((point, index) => {
+    const angle = index * angleStep;  // Ángulo para el día actual
+    const r = radialScale(point[valueColumn]);     // Radio de acuerdo al valor de consumo
+    // Mapeo de las coordenadas al canvas
+    const xCanvas = Math.cos(angle) * r + centerX;
+    const yCanvas = Math.sin(angle) * r + centerY;
+    return { xCanvas, yCanvas,  ...point };
+  });
+
+  //Dibujar lineas de referencia
+  radialPoints.forEach((point, index) => {
+    // Determina cuánto extender la línea
+    const extensionFactor = 0.2; // Extiende un 20% más allá
+
+    // Cálculo de las coordenadas extendidas
+    const extendedX = point.xCanvas + (point.xCanvas - centerX) * extensionFactor;
+    const extendedY = point.yCanvas + (point.yCanvas - centerY) * extensionFactor;
+
+    // Si es el primer punto, haz la línea más gruesa
+    if((index === 0) || (index+1)%lineDivideFactor===0){
+
+      if (index === 0) {
+        context.beginPath();
+        context.moveTo(centerX, centerY); // Desde el centro
+        context.lineTo(extendedX, extendedY); // Hasta el punto extendido
+        context.strokeStyle = 'rgba(0, 0, 0, 0.7)'; // Color más oscuro para el primer punto
+        context.lineWidth = 3; // Grosor mayor para el primer punto
+        context.stroke();
+      }else{
+        // Línea normal para los demás puntos
+        context.beginPath();
+        context.moveTo(centerX, centerY); // Desde el centro
+        context.lineTo(extendedX, extendedY); // Hasta el punto extendido
+        context.strokeStyle = 'rgba(0, 0, 0, 0.3)'; 
+        context.lineWidth = 1; // Grosor normal
+        context.stroke();
+      }
+
+      // Obtener el valor del infoColumnNames para este punto
+      const value = point["semana"]; 
+  
+      // Ajustar el texto para que no se salga del canvas
+      const text = `${value}`;
+      const textX = extendedX + 5;  // Un poco más allá de la extensión
+      const textY = extendedY;      // Mismo nivel en Y de la extensión
+  
+      // Dibujar el texto al final de la línea
+      context.font = '12px Arial'; // Fuente y tamaño
+      drawText(context,text, textX, textY, 12 ,color,- 0)
+    }
+  }); 
+  
+  //Dibujar los puntos
+  radialPoints.forEach(point => {
+    context.beginPath();
+    context.arc(point.xCanvas, point.yCanvas, pointRadius, 0, Math.PI * 2); // Dibuja un círculo
+    context.fill();
+    context.closePath();
+  });
+
+  //Suavizado de los puntos  
+  const smoothPoints = catmullRomSpline(radialPoints);
+
+  // Rellenar el área bajo la curva
+  context.fillStyle = color;
+  context.beginPath();
+  context.moveTo(smoothPoints[0].xCanvas, smoothPoints[0].yCanvas);  // Comienza desde el primer punto
+
+  // Dibujar la curva suavizada y rellenar el área
+  smoothPoints.forEach(point => {
+    context.lineTo(point.xCanvas, point.yCanvas);  // Traza la curva de los puntos suavizados
+  });
+
+  context.lineTo(smoothPoints[0].xCanvas, smoothPoints[0].yCanvas);  // Regresa al primer punto para cerrar
+  context.closePath();
+  context.fill();  // Rellenar el área debajo de la curva
+
+  // Rellenar el círculo interno con color blanco
+  context.fillStyle = 'white';
+  context.beginPath();
+  context.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);  // Dibuja el círculo interno
+  context.fill();  // Rellenar el círculo interno con blanco
+
+  // Evento de hover sobre el canvas
+  canvas.addEventListener('mousemove', function (event) {
+      handleHover(event, canvas, radialPoints, infoColumNames, "line", canvasPadding, infoOverlay);
+  });
+}
+
+
+
+
+
 /******************************************************************************************************************************************************** */
 /* Funciones auxiliares */
 /******************************************************************************************************************************************************** */
+
+
+
 
 
 /**
@@ -1063,9 +1674,9 @@ export function drawBubblesWithFillAndRingColor(context, dataWithCanvasValues, c
  * @param {number} canvasPadding - padding del canvas 
  */
 //Función para manejar el evento hover sobre puntos 
-function handleHover(event, canvas, data, infoColumnNames, chartType, canvasPadding = 0) {
+function handleHover(event, canvas, data, infoColumnNames, chartType, canvasPadding = 0, infoOverlayId="infoOverlay") {
   
-  const infoOverlay = document.getElementById('infoOverlay');
+  const infoOverlay = document.getElementById(infoOverlayId);
   const rect = canvas.getBoundingClientRect();
 
   // Borrar contenido anterior
@@ -1531,6 +2142,59 @@ export function stopAllAnimations(animationIDs) {
   animationIDs = [];
 }
 
+/**
+ * 
+ * @param {context} context - contexto del canvas
+ * @param {canvas} canvas - canvas
+ * @param {int} circleRadius - radio del circulo
+ * @param {String} color - color de relleno del círculo
+ * @param {int} textX  - posición del texto en eje X
+ * @param {int} textY - posición del texto en eje Y
+ * @param {int} xOffset - espacio en el eje X entre el circulo y el texto de referencia
+ * @param {String} text - texto de referencia 
+ * @param {String} textColor  - color de letra
+ */
+export function drawCircleLegend(context, canvas, circleRadius,color, textX,textY,xOffset,text, textColor="black") {
+  
+  // Dibujar círculo para "Horas de sueño"
+  context.beginPath();
+  context.fillStyle = color;
+  context.arc(textX, textY, circleRadius, 0, Math.PI * 2);
+  context.fill();
+  context.closePath();
+  context.fillStyle = "black";
+  context.font = "14px Arial";
+  drawText(context,text, textX + xOffset, textY, 12 ,textColor,- 0)
+}
+
+// Suavizado de los puntos con Catmull-Rom Spline
+/**
+ * Genera una curva suavizada a partir de un conjunto de puntos usando interpolación Catmull-Rom.
+ * 
+ * @param {Array} points - Arreglo de puntos con coordenadas `{ xCanvas, yCanvas }` que se desean suavizar.
+ * @returns {Array} smoothPoints - Arreglo de puntos suavizados con coordenadas `{ xCanvas, yCanvas }`.
+ */
+export function catmullRomSpline(points) {
+  let smoothPoints = [];
+  for (let i = 0; i < points.length; i++) {
+    const p0 = points[(i - 1 + points.length) % points.length];  // Punto anterior (circular)
+    const p1 = points[i];                                        // Punto actual
+    const p2 = points[(i + 1) % points.length];                  // Punto siguiente
+    const p3 = points[(i + 2) % points.length];                  // Punto posterior
+
+    // Interpolación Catmull-Rom: Calculando puntos intermedios
+    for (let t = 0; t < 1; t += 0.1) {
+      const tt = t * t;
+      const ttt = tt * t;
+      
+      const x = 0.5 * ((2 * p1.xCanvas) + (-p0.xCanvas + p2.xCanvas) * t + (2*p0.xCanvas - 5*p1.xCanvas + 4*p2.xCanvas - p3.xCanvas) * tt + (-p0.xCanvas + 3*p1.xCanvas - 3*p2.xCanvas + p3.xCanvas) * ttt);
+      const y = 0.5 * ((2 * p1.yCanvas) + (-p0.yCanvas + p2.yCanvas) * t + (2*p0.yCanvas - 5*p1.yCanvas + 4*p2.yCanvas - p3.yCanvas) * tt + (-p0.yCanvas + 3*p1.yCanvas - 3*p2.yCanvas + p3.yCanvas) * ttt);
+      
+      smoothPoints.push({ xCanvas: x, yCanvas: y });
+    }
+  }
+  return smoothPoints;
+}
 
 
 
