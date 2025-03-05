@@ -1,0 +1,217 @@
+raza,peso_kg,edad_anios
+Labrador Retriever,29.5,5
+Labrador Retriever,31.2,6
+Labrador Retriever,30.5,4
+Labrador Retriever,32.0,7
+Labrador Retriever,33.5,5
+Labrador Retriever,34.8,4
+Labrador Retriever,35.9,6
+Labrador Retriever,37.1,4
+Labrador Retriever,38.0,5
+Labrador Retriever,39.2,7
+Labrador Retriever,40.5,6
+Labrador Retriever,41.0,4
+Labrador Retriever,42.5,6
+Labrador Retriever,43.6,5
+Labrador Retriever,44.9,4
+Labrador Retriever,46.2,7
+Labrador Retriever,47.4,6
+Labrador Retriever,48.0,4
+Labrador Retriever,49.1,6
+Labrador Retriever,50.4,5
+Labrador Retriever,29.5,5
+Labrador Retriever,31.2,6
+Labrador Retriever,30.5,4
+Labrador Retriever,32.0,7
+Labrador Retriever,33.5,5
+Labrador Retriever,34.8,4
+Labrador Retriever,35.9,6
+Labrador Retriever,37.1,4
+Labrador Retriever,38.0,5
+Labrador Retriever,39.2,7
+Labrador Retriever,40.5,6
+Labrador Retriever,41.0,4
+Labrador Retriever,42.5,6
+Labrador Retriever,43.6,5
+Labrador Retriever,44.9,4
+Labrador Retriever,46.2,7
+Labrador Retriever,47.4,6
+Labrador Retriever,48.0,4
+Labrador Retriever,49.1,6
+Labrador Retriever,50.4,5
+Labrador Retriever,29.5,5
+Labrador Retriever,31.2,6
+Labrador Retriever,30.5,4
+Labrador Retriever,32.0,7
+Labrador Retriever,33.5,5
+Labrador Retriever,34.8,4
+Labrador Retriever,35.9,6
+Labrador Retriever,37.1,4
+Labrador Retriever,38.0,5
+Labrador Retriever,39.2,7
+Labrador Retriever,40.5,6
+Labrador Retriever,41.0,4
+Labrador Retriever,42.5,6
+Labrador Retriever,43.6,5
+Labrador Retriever,44.9,4
+Labrador Retriever,46.2,7
+Labrador Retriever,47.4,6
+Labrador Retriever,48.0,4
+Labrador Retriever,49.1,6
+Labrador Retriever,50.4,5
+Golden Retriever,30.1,4
+Golden Retriever,32.0,7
+Golden Retriever,33.2,5
+Golden Retriever,34.1,6
+Golden Retriever,35.4,3
+Golden Retriever,36.8,5
+Golden Retriever,38.2,3
+Golden Retriever,39.0,5
+Golden Retriever,40.3,3
+Golden Retriever,41.8,4
+Golden Retriever,43.2,5
+Golden Retriever,44.5,3
+Golden Retriever,45.8,4
+Golden Retriever,47.2,5
+Golden Retriever,48.5,3
+Pastor Alemán,34.8,3
+Pastor Alemán,36.1,5
+Pastor Alemán,37.4,6
+Pastor Alemán,38.5,4
+Pastor Alemán,39.7,6
+Pastor Alemán,40.5,7
+Bulldog Inglés,22.4,2
+Bulldog Inglés,24.7,3
+Bulldog Inglés,26.4,2
+Bulldog Inglés,28.1,4
+Bulldog Inglés,29.0,3
+Beagle,12.5,1
+Beagle,14.3,2
+Beagle,15.0,1
+Beagle,16.1,3
+Beagle,17.2,1
+Beagle,18.0,2
+Beagle,19.0,1
+Beagle,20.3,3
+Beagle,21.8,2
+Beagle,22.5,1
+Beagle,23.2,3
+Beagle,24.5,2
+Beagle,25.2,1
+Beagle,26.5,3
+Beagle,27.0,2
+Beagle,28.2,1
+Beagle,29.1,3
+Beagle,30.0,2
+Beagle,31.2,1
+Beagle,32.5,3
+Beagle,15.0,1
+Beagle,16.1,3
+Beagle,17.2,1
+Beagle,18.0,2
+Beagle,19.0,1
+Beagle,20.3,3
+Beagle,21.8,2
+Beagle,22.5,1
+Beagle,23.2,3
+Beagle,24.5,2
+Beagle,25.2,1
+Beagle,26.5,3
+Beagle,27.0,2
+Beagle,28.2,1
+Beagle,29.1,3
+Beagle,30.0,2
+Beagle,31.2,1
+Beagle,32.5,3
+Poodle,9.8,2
+Poodle,10.5,1
+Poodle,11.2,3
+Poodle,12.3,1
+Poodle,13.1,2
+Poodle,14.0,1
+Poodle,15.2,3
+Poodle,16.1,2
+Poodle,17.0,1
+Poodle,18.3,3
+Poodle,19.5,2
+Poodle,20.9,1
+Poodle,21.5,3
+Poodle,22.8,2
+Poodle,23.7,1
+Poodle,24.5,3
+Poodle,25.8,2
+Poodle,26.4,1
+Poodle,27.3,3
+Poodle,28.1,2
+Poodle,20.9,1
+Poodle,21.5,3
+Poodle,22.8,2
+Poodle,23.7,1
+Poodle,24.5,3
+Chihuahua,3.1,1
+Chihuahua,4.0,2
+Chihuahua,4.5,1
+Chihuahua,5.1,2
+Chihuahua,5.6,1
+Chihuahua,6.0,2
+Chihuahua,6.5,1
+Chihuahua,7.0,2
+Chihuahua,7.5,1
+Chihuahua,8.1,2
+Chihuahua,8.8,1
+Chihuahua,11.5,1
+Chihuahua,12.0,2
+Chihuahua,12.5,1
+Chihuahua,13.0,2
+Dachshund,7.6,3
+Dachshund,8.1,4
+Dachshund,9.0,3
+Dachshund,10.0,4
+Dachshund,11.2,3
+Dachshund,12.0,4
+Dachshund,13.5,3
+Dachshund,14.2,4
+Dachshund,15.1,3
+Dachshund,16.0,4
+Dachshund,17.0,3
+Dachshund,18.2,4
+Dachshund,19.0,3
+Dachshund,20.0,4
+Dachshund,21.2,3
+Dachshund,22.0,4
+Dachshund,23.0,3
+Dachshund,24.0,4
+Dachshund,25.2,3
+Dachshund,26.4,4
+Dachshund,14.2,4
+Dachshund,15.1,3
+Dachshund,16.0,4
+Dachshund,17.0,3
+Dachshund,18.2,4
+Dachshund,19.0,3
+Dachshund,20.0,4
+Dachshund,21.2,3
+Dachshund,22.0,4
+Dachshund,23.0,3
+Dachshund,24.0,4
+Dachshund,25.2,3
+Dachshund,26.4,4
+Husky Siberiano,27.9,4
+Husky Siberiano,28.4,5
+Husky Siberiano,29.1,4
+Husky Siberiano,30.0,5
+Husky Siberiano,31.4,4
+Husky Siberiano,32.8,5
+Husky Siberiano,34.1,4
+Husky Siberiano,35.0,5
+Husky Siberiano,36.4,4
+Husky Siberiano,37.0,5
+Husky Siberiano,38.2,4
+Husky Siberiano,39.4,5
+Husky Siberiano,46.1,5
+Husky Siberiano,47.3,4
+Husky Siberiano,48.5,5
+Border Collie,18.2,2
+Border Collie,19.0,3
+Border Collie,20.5,2
+Border Collie,21.2,3
