@@ -1,0 +1,236 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Evita barras de desplazamiento */
+}
+
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 70%;
+    height: 50%;
+    background-color: rgba(4, 37, 49, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    margin-left: 5%;
+    margin-top: 5%;
+    border-radius : 20px;
+    padding: 10%;
+    padding-top: 8% ;
+    color:white;
+    font-size: x-large;
+    transition: opacity 2.5s ease; 
+}
+
+#close {
+    color: white;
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    font-size: 60px;
+    cursor: pointer;
+}
+
+#closeIntButton{
+    color: white;
+    font-size: x-large;
+    border-radius: 15px;
+    background-color: rgb(37, 36, 34,0.7);
+    margin-left: 42%;
+    margin-top: 5%;
+    padding: 2%;
+}
+
+#openModal{
+    color: white;
+    border-radius: 15px;
+    background-color: rgba(5, 37, 37, 0.9);
+    padding: 0.5%;
+    position: absolute;
+    top: 80px;
+    left: 20px;
+    z-index: 100;
+    display: none;
+}
+
+
+#arbol {
+    display: block; /* Asegura que el canvas se muestre como un bloque */
+    width: 100%;
+    height: 100%;
+    /*background-color: rgb(12, 103, 103);*/
+    background-image: url("../images/wallpaper.jpg");
+    background-size: 100%;
+    z-index: 0;
+    position: absolute;
+}
+
+#flores {
+    display: block; /* Asegura que el canvas se muestre como un bloque */
+    width: 100%;
+    height: 100%;
+    background-size: 100%;
+    z-index: 1;
+    position: absolute;
+}
+
+.slider-container {
+    color: white;
+    width: 25%;
+    margin: 20px auto;
+    position: absolute;
+    left:40px;
+    top: -0px;
+    z-index: 40;
+}
+
+/*input*/
+#year-slider {
+    width: 110%;
+    margin-left: -20px;
+    height: 8px;
+    appearance: none;
+    background-color: transparent; /* Establecer el color de fondo del slider como transparente */
+    border-radius: 10px;
+    border: 2px solid white; /* Borde de la línea del slider */
+}
+
+
+/*bolita*/
+#year-slider::-webkit-slider-thumb {
+    width: 18px;
+    height: 18px;
+    background: white; /* Color de la bolita */
+    border-radius: 50%;
+    border: 2px solid black; /* Borde de la bolita */
+    appearance: none; /* Eliminar el estilo predeterminado del thumb */
+    margin-top: -13px; /* Ajustar la posición de la bolita */
+    margin-left: 0px;
+    box-sizing: border-box; /* Incluir el borde en el tamaño */
+}
+
+/*numeros labels*/
+#tickmarks {
+    display: flex;
+    justify-content:space-evenly ;
+    position: absolute;
+    bottom: -30px;
+    left: -35px;
+    width: 120%;
+}
+
+/*Marcas*/
+#tickmarks::before {
+    content: attr(min);
+    position: absolute;
+    left: 0;
+}
+
+#tickmarks::after {
+    content: attr(max);
+    position: absolute;
+    right: 0;
+}
+
+
+#tickmarks option {
+    position: relative;
+}
+
+/* Estilo para las líneas de las marcas */
+#tickmarks option::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px; /* Ancho de las líneas */
+    height: 10px; /* Altura de las líneas */
+    background-color: rgb(192, 129, 20); /* Color de las líneas */
+}
+
+
+/* Contador*/
+
+#marcador{
+    position: absolute;
+    top: 5px;
+    right:5px;
+}
+
+.circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 20px;
+    text-align: center;
+    line-height: 80px;
+}
+
+#marca_ninios {
+    border: 4px solid rgb(22, 76, 143);
+    color: white;
+}
+
+#marca_ninias {
+    border: 4px solid rgb(222, 120, 137);
+    color: white;
+}
+
+/*Check acumulative*/
+
+#acummulativeCheckControl {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Alineación inicial a la izquierda */
+    position: absolute; /* Para posicionarlo fácilmente respecto al control deslizante */
+    top: 2%; /* Ajusta según la posición del control deslizante */
+    left: 31%; /* Alineado al control deslizante */
+    z-index: 50; /* Asegúrate de que esté encima del control deslizante */
+    color: white;
+}
+
+#acum_check {
+    margin-right: 10px; /* Espacio entre el checkbox y el texto */
+}
+
+#acum_check_text {
+    font-size: 1rem;
+    color: white;
+    margin: 0;
+}
+
+@media screen and (max-width: 1280px) {
+    #acum_check_text {
+        margin-top: 5px; /* Agrega espacio entre el checkbox y el texto */
+    }
+
+    .overlay{
+        padding-top: 3%;
+    }
+}
+@media screen and (max-width: 884px) {
+    #acummulativeCheckControl {
+        flex-direction: column; /* Cambia a columna */
+        align-items: flex-start; /* Alineación inicial a la izquierda */
+        top: 1%; /* Ajusta la posición relativa debajo del control deslizante */
+        left: 45%;
+        margin-left: 40px; /* Espacio para separar del borde izquierdo */
+        width: auto;
+    }
+
+    .overlay{
+        top:13%;
+    }
+    
+    #year-slider{
+        width: 150%;
+        margin-left: -35px;
+    }
+}

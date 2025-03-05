@@ -1,1 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adopciones de niños en México</title>
+    
+    <!-- Enlace al archivo CSS para estilos -->
+    <link rel="stylesheet" href="css/styles.css">
 
+    <!-- Scripts Externos -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+</head>
+<body>
+    <!-- Contenedor del modal de descripción -->
+    <div class="overlay" id="overlay">
+        <!-- Botón para cerrar el modal -->
+        <span class="closeModal" id="close">&times;</span>
+        
+        <!-- Descripción del propósito del gráfico -->
+        <p>
+            <span style="font-weight: bold;">Árbol familiar</span>
+        </p>
+        <p>El gráfico que verás a continuación representa un árbol familiar inspirado en la pintura de Vincent Van Gogh "Almendro en flor".</p>
+        <p>La información presentada está relacionada con adopciones de niños y niñas realizadas en toda la República Mexicana.</p>
+        <p>Puedes elegir el año con el control deslizante, además de decidir si deseas observar datos específicos de un año o datos acumulados hasta cierto año.</p>
+        <p>En la esquina superior derecha se mostrará el número total de adopciones de niños (color azul) y niñas (color rosa).</p>
+        <p>Cada flor en el árbol simboliza la reintegración de un niño o niña al árbol familiar: una flor rosa representa una niña adoptada, mientras que una flor azul representa a un niño adoptado.</p>
+        
+        <!-- Botón para cerrar el modal e ir al gráfico -->
+        <p><button class="closeModal" id="closeIntButton">Ver el árbol</button></p>
+    </div>
+
+    <!-- Botón para abrir el modal de descripción -->
+    <div>
+        <button id="openModal">Ver descripción</button>
+    </div>
+
+    <!-- Canvas para el árbol y las flores -->
+    <canvas id="arbol"></canvas>
+    <canvas id="flores" style="z-index: 10;"></canvas>
+
+    <!-- Contenedor del control deslizante -->
+    <div class="slider-container">
+        <!-- Control deslizante para seleccionar el año -->
+        <input type="range" min="2014" max="2023" value="0" class="slider" id="year-slider" list="tickmarks">
+        
+        <!-- Etiquetas de los años disponibles -->
+        <datalist id="tickmarks">
+            <option value="0">---</option>
+            <option value="2015">2015</option>
+            <option value="2016">2016</option>
+            <option value="2017">2017</option>
+            <option value="2018">2018</option>
+            <option value="2019">2019</option>
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+        </datalist>
+    </div>
+
+    <!-- Indicador del número de adopciones -->
+    <div id="marcador">
+        <!-- Número total de niños adoptados -->
+        <div id="marca_ninios" class="circle">0</div>
+        <!-- Número total de niñas adoptadas -->
+        <div id="marca_ninias" class="circle">0</div>
+    </div>
+
+    <!-- Contenedor del checkbox para datos acumulados -->
+    <div id="acummulativeCheckControl">
+        <input type="checkbox" id="acum_check">
+        <label id="acum_check_text" for="acum_check">Acumulado</label>
+    </div>
+
+    <!-- Archivo JavaScript con la lógica del árbol y las interacciones -->
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/modalInfo.js"></script>
+</body>
+</html>
